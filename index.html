@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Vacaciones</title>
+    <!-- Carga de Tailwind CSS para estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Configuración de la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilos personalizados para el botón */
+        .btn-primary {
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border border-gray-200">
+        <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-6">Calculadora de Vacaciones</h1>
+
+        <!-- Mensaje de advertencia importante -->
+        <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg mb-6 shadow-sm">
+            <p class="font-semibold text-lg mb-2">¡Atención Importante!</p>
+            <p class="text-base leading-relaxed">
+                Por favor, ingresa tu <strong class="text-yellow-900">salario quincenal BRUTO</strong> (el monto antes de cualquier descuento).
+                Es crucial que revises tu recibo de pago para verificar tus ingresos totales sin deducciones.
+            </p>
+        </div>
+
+        <!-- Campo de entrada para el salario quincenal -->
+        <div class="mb-5">
+            <label for="salarioQuincenal" class="block text-gray-700 text-sm font-medium mb-2">
+                Salario Quincenal Bruto (sin descuentos):
+            </label>
+            <input
+                type="number"
+                id="salarioQuincenal"
+                placeholder="Ej: 500.00"
+                min="0"
+                step="0.01"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 text-lg"
+            >
+        </div>
+
+        <!-- Botón para calcular -->
+        <button
+            onclick="calcularVacaciones()"
+            class="btn-primary w-full text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out text-lg"
+        >
+            Calcular Vacaciones
+        </button>
+
+        <!-- Área para mostrar el resultado -->
+        <div id="resultado" class="mt-8 p-5 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-center shadow-inner hidden">
+            <!-- El resultado se insertará aquí mediante JavaScript -->
+        </div>
+
+        <!-- Mensaje de error (inicialmente oculto) -->
+        <div id="errorMessage" class="mt-4 p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-center shadow-inner hidden">
+            Por favor, ingresa un valor numérico válido y positivo para tu salario quincenal.
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Función principal para calcular las vacaciones.
+         * Lee el salario quincenal, realiza los cálculos y muestra el resultado.
+         */
+        function calcularVacaciones() {
+            // Obtiene el valor del input y lo convierte a un número flotante
+            const salarioQuincenalInput = document.getElementById('salarioQuincenal');
+            const salarioQuincenal = parseFloat(salarioQuincenalInput.value);
+
+            // Elementos de resultado y error
+            const resultadoDiv = document.getElementById('resultado');
+            const errorMessageDiv = document.getElementById('errorMessage');
+
+            // Oculta mensajes anteriores
+            resultadoDiv.classList.add('hidden');
+            errorMessageDiv.classList.add('hidden');
+
+            // Validación del input
+            if (isNaN(salarioQuincenal) || salarioQuincenal <= 0) {
+                errorMessageDiv.classList.remove('hidden'); // Muestra el mensaje de error
+                return; // Detiene la ejecución de la función
+            }
+
+            // Paso 1: Estimar el salario mensual a partir del quincenal
+            // Se asume que hay dos quincenas en un mes.
+            const salarioMensualEstimado = salarioQuincenal * 2;
+
+            // Paso 2: Calcular el salario diario
+            // Se divide el salario mensual estimado por 30 días para obtener un promedio diario.
+            const salarioDiario = salarioMensualEstimado / 30;
+
+            // Paso 3: Calcular el monto total de las vacaciones
+            // Se multiplica el salario diario por los 88 días base para el cálculo de vacaciones.
+            const totalVacaciones = salarioDiario * 88;
+
+            // Muestra el resultado en el div correspondiente
+            resultadoDiv.innerHTML = `
+                <p class="text-xl font-semibold mb-2">Resumen del Cálculo:</p>
+                <p class="text-lg">Salario Quincenal Bruto Ingresado: <strong class="text-blue-900">$${salarioQuincenal.toFixed(2)}</strong></p>
+                <p class="text-lg mt-3">El monto estimado de tus vacaciones es:</p>
+                <p class="text-4xl font-extrabold text-blue-700 mt-2">$${totalVacaciones.toFixed(2)}</p>
+                <p class="text-sm text-gray-600 mt-4">Este cálculo se basa en 88 días de salario y tu salario quincenal bruto.</p>
+            `;
+            resultadoDiv.classList.remove('hidden'); // Muestra el div de resultado
+        }
+    </script>
+</body>
+</html>
